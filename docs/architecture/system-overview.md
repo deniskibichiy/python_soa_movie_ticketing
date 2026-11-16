@@ -78,17 +78,76 @@ The Ticketing service will communicate with Banking through its HTTP API.
 
 Ticketing will use the returned `success` value to determine whether a booking can proceed.
 
-### Ticketing Service
+## Ticketing Service
 
-Owns ticket bookings.
+The Ticketing service coordinates movie discovery and ticket purchases.
 
-Planned responsibilities:
-- Retrieve movies through the Movies API.
-- Accept ticket purchase requests.
-- Coordinate payment through Banking.
-- Record and retrieve bookings.
+It is responsible for:
 
-## 3. Communication
+- Retrieve movies released in a specified year.
+- Communicate with Movies to retrieve movie information.
+- Submit simulated payment requests to Banking.
+- Calculate ticket payment amounts.
+- Maintain ticket counts grouped by movie ID.
+
+### Service Communication
+
+Ticketing communicates with downstream services through HTTP JSON APIs.
+
+**Movies integration**
+
+1. Receives a year from the client.
+2. Calls `GET /movies/find` on Movies.
+3. Retrieves each matching movie using `GET /movies/{id}`.
+4. Returns a simplified list containing movie IDs and titles.
+
+**Banking integration**
+
+1. Receives a ticket purchase request.
+2. Verifies that the movie exists.
+3. Calculates the charge using `count * 10`.
+4. Calls `POST /charges` on Banking.
+5. Updates ticket counts only when payment succeeds.
+
+### API Endpoints
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/health` | Health check |
+| POST | `/GetMovies` | Retrieve movies by year |
+| POST | `/BuyTickets` | Purchase tickets |
+| POST | `/GetTickets` | Retrieve ticket counts |
+
+### Current Data Management
+
+Ticket counts are currently stored in an in-memory dictionary.
+
+This preserves the original Java implementation but means ticket counts are lost when the service restarts.
+
+Persistent storage is planned as a subsequent improvement.
+
+# 3. Integrated System Workflow
+
+The current system has three independently running services:
+
+1. Movies manages movie catalogue data.
+2. Banking evaluates simulated card charges.
+3. Ticketing orchestrates movie discovery and ticket purchases.
+
+The services communicate through HTTP and JSON rather than directly importing one another's business logic.
+
+# 4. Planned Client Interface
+
+A lightweight browser interface will be added using:
+
+- HTML for page structure.
+- CSS for styling and layout.
+- JavaScript for API requests and dynamic updates.
+
+The browser interface will communicate with the Ticketing API. It will not access the Movies or Banking databases directly.
+
+
+# 5. Communication
 
 Services will communicate through HTTP APIs using JSON.
 
@@ -96,15 +155,15 @@ Ticketing will act as the orchestration point for the purchase workflow.
 
 No service should directly access another service's database.
 
-## 4. Data Ownership
+# 6. Data Ownership
 
-Each service will own its database.
+Each service owns its database.
 
 - Movies owns movie catalogue data.
-- Banking owns transaction data.
+- Banking owns transaction data (No persistence of transaction data has been currently implemented).
 - Ticketing owns booking data.
 
-## 5. Purchase Workflow
+# 7. Purchase Workflow
 
 Planned workflow:
 
@@ -116,7 +175,7 @@ Planned workflow:
 6. Ticketing records the booking outcome.
 7. Ticketing returns the result to the customer.
 
-## 6. Current Implementation
+# 8. Current Implementation
 
 The Movies service has been implemented with FastAPI and SQLAlchemy.
 
@@ -124,9 +183,9 @@ PostgreSQL 16 runs in Docker and stores the movie catalogue.
 
 Banking service has been implemented to simulate card payment requests. 
 
-Ticketing remain pending.
+Ticketing service has been implemented.
 
-## 7. Architecture Evolution
+# 9. Architecture Evolution
 
 The initial implementation prioritizes a working service and clear boundaries.
 

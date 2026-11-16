@@ -135,9 +135,40 @@ Example response:
 
 **Persistence:** None. The current implementation does not store payment transactions or card details.
 
-**Important:** This is a simulation of the original Java implementation, not a real payment-processing integration.
 
-### Infrastructure
+### 3. Ticketing Service
+
+**Port:** 8003
+
+- Retrieve movies by release year through Movies.
+- Purchase tickets through Banking.
+- Calculate payment as `count * 10`.
+- Update ticket counts only after successful payment.
+- Reject purchases for unknown movie IDs.
+- FastAPI, HTTPX and Pydantic.
+- Ticket counts currently held in memory.
+
+## Service Integration
+
+The Ticketing service communicates with Movies and Banking over HTTP using JSON.
+
+| Operation | Endpoint | Responsibility |
+|---|---|---|
+| Get movies | `POST /GetMovies` | Retrieve movies for a year |
+| Buy tickets | `POST /BuyTickets` | Validate movie, request payment and update ticket count |
+| Get tickets | `POST /GetTickets` | Retrieve ticket counts |
+
+## Current Verification Status
+
+- Movies API and PostgreSQL persistence verified.
+- Banking API and automated tests verified.
+- Ticketing API and automated tests verified.
+- Ticketing-to-Movies communication verified.
+- Ticketing-to-Banking communication verified.
+- Successful and failed payment paths tested.
+- Invalid movie rejection tested.
+
+## Infrastructure
 
 Implemented:
 
