@@ -185,6 +185,22 @@ Banking service has been implemented to simulate card payment requests.
 
 Ticketing service has been implemented.
 
+## Containerized Deployment
+
+The three application services and the PostgreSQL database are orchestrated through Docker Compose.
+
+Each application service runs in its own container:
+
+- Movies owns the movie catalogue and PostgreSQL integration.
+- Banking handles simulated payment authorization.
+- Ticketing coordinates movie retrieval, payment authorization, and ticket-count updates.
+
+The services communicate over the internal Docker network using Compose service names. The database is exposed on host port 5433 for development access, while the APIs are exposed on ports 8001, 8002, and 8003.
+
+PostgreSQL data is stored in a named Docker volume so that it survives ordinary container recreation.
+
+The deployment configuration is maintained in `infrastructure/docker-compose.yml`.
+
 # 9. Architecture Evolution
 
 The initial implementation prioritizes a working service and clear boundaries.

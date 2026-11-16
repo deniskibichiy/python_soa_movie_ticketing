@@ -185,15 +185,9 @@ Implemented:
 |---|---|
 | Movies | API operations and PostgreSQL persistence verified |
 | Banking | API operations and automated tests passed |
-| Ticketing | Pending implementation and integration |
+| Ticketing | implementation and integration tests passed |
 
-Run the Banking tests:
 
-    python -m pytest services/banking/tests/ -v
-
-Start Banking:
-
-    uvicorn services.banking.app.main:app --reload --port 8002
 
 ## Local Development
 
@@ -234,10 +228,23 @@ uvicorn services.movies.app.main:app --reload --port 8001
 - Health check: http://127.0.0.1:8001/health
 - Swagger UI: http://127.0.0.1:8001/docs
 
-## Development Approach
+```markdown
+## Running with Docker Compose
 
-The system is being modernized incrementally.
+The application can be started as a multi-container system using Docker Compose.
 
-The original Java implementation is used as a reference for business functionality and service contracts. The Python implementation improves persistence, validation, maintainability, and deployment.
+```bash
+sudo docker compose -f infrastructure/docker-compose.yml up -d --build
+```
 
-Each service will be implemented and verified independently before integration.
+The APIs are available at:
+- Movies: http://localhost:8001
+- Banking: http://localhost:8002
+- Ticketing: http://localhost:8003
+Health checks:
+- http://localhost:8001/health
+- http://localhost:8002/health
+- http://localhost:8003/health
+For container status and logs:
+sudo docker compose -f infrastructure/docker-compose.yml ps
+sudo docker compose -f infrastructure/docker-compose.yml logs -f
