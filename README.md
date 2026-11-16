@@ -37,28 +37,31 @@ Each service will own its data and expose HTTP APIs. Services will communicate t
 
 ```text
 python_soa_movie_ticketing/
-├── docs/
-│   ├── api-contracts/
-│   ├── architecture/
-│   └── decisions/
-├── infrastructure/
-│   ├── docker-compose.yml
-│   └── postgres/
-├── scripts/
+├── frontend/
+│   ├── index.html
+│   ├── css/
+│   │   └── styles.css
+│   └── js/
+│       └── app.js
 ├── services/
-│   ├── banking/
-│   │   ├── app/
-│   │   └── tests/
 │   ├── movies/
-│   │   ├── app/
-│   │   └── tests/
+│   ├── banking/
 │   └── ticketing/
-│       ├── app/
-│       └── tests/
+├── infrastructure/
+│   └── docker-compose.yml
+├── docs/
+│   ├── architecture/
+│   │   └── system-overview.md
+│   ├── api-contracts/
+│   │   └── ticketing.md
+│   ├── deployment/
+│   │   └── docker-compose.md
+│   └── frontend/
+│       └── frontend-guide.md
+├── requirements.txt
 ├── .env.example
 ├── .gitignore
-├── README.md
-└── requirements.txt
+└── README.md
 ```
 
 ## Current Implementation Status
@@ -228,7 +231,6 @@ uvicorn services.movies.app.main:app --reload --port 8001
 - Health check: http://127.0.0.1:8001/health
 - Swagger UI: http://127.0.0.1:8001/docs
 
-```markdown
 ## Running with Docker Compose
 
 The application can be started as a multi-container system using Docker Compose.
@@ -248,3 +250,30 @@ Health checks:
 For container status and logs:
 sudo docker compose -f infrastructure/docker-compose.yml ps
 sudo docker compose -f infrastructure/docker-compose.yml logs -f
+
+
+## Frontend
+
+A basic web interface is available using HTML, CSS, and vanilla JavaScript.
+
+The interface supports:
+
+- Searching movies by release year.
+- Selecting a movie.
+- Purchasing tickets.
+- Viewing ticket counts.
+
+### Running the frontend
+
+Start the backend:
+
+```bash
+sudo docker compose -f infrastructure/docker-compose.yml up -d
+```
+Start the frontend
+
+```bash
+python -m http.server 5500 --directory frontend
+```
+
+Open `http://localhost:5500` in the browser.

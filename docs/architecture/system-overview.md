@@ -201,13 +201,24 @@ PostgreSQL data is stored in a named Docker volume so that it survives ordinary 
 
 The deployment configuration is maintained in `infrastructure/docker-compose.yml`.
 
-# 9. Architecture Evolution
+# 9. Browser-Based Frontend
 
-The initial implementation prioritizes a working service and clear boundaries.
+The system includes a lightweight browser interface implemented with HTML, CSS, and vanilla JavaScript.
 
-Further improvements will introduce:
-- Alembic database migrations.
-- Explicit service and repository layers.
-- Automated tests.
-- Inter-service failure handling.
-- More robust booking and payment consistency.
+The frontend communicates exclusively with the Ticketing API.
+
+The interaction flow is:
+
+1. A user searches for movies by year.
+2. The frontend sends a request to Ticketing.
+3. Ticketing retrieves movie information from Movies.
+4. The user selects a movie and requests tickets.
+5. Ticketing requests payment authorization from Banking.
+6. Ticketing updates its ticket counts after successful authorization.
+7. The frontend can retrieve and display ticket counts.
+
+The frontend is served independently during development using Python's built-in HTTP server on port 5500.
+
+CORS middleware on Ticketing permits the development frontend origins.
+
+This keeps the frontend separate from the backend service implementations.
