@@ -1,0 +1,40 @@
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.*
+
+# Exceptions
+!.env.example
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Testing and coverage
+htmlcov/
+.coverage
+coverage.xml
+
+# Build artifacts
+dist/
+build/
+
+# Logs
+*.log
+EOF
