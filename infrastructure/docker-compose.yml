@@ -17,5 +17,72 @@ services:
       timeout: 5s
       retries: 5
 
+  movies:
+    build:
+      context: ..
+      dockerfile: services/movies/Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql+psycopg://soa_user:local_dev_password@movies-db:5432/movies_db
+    ports:
+      - "8001:8001"
+    depends_on:
+      movies-db:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8001/health')"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  banking:
+    build:
+      context: ..
+      dockerfile: services/banking/Dockerfile
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8002/health')"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  ticketing:
+    build:
+      context: ..
+      dockerfile: services/ticketing/Dockerfile
+    restart: unless-stopped
+    environment:
+      MOVIES_SERVICE_URL: http://movies:8001
+      BANKING_SERVICE_URL: http://banking:8002
+    ports:
+      - "8003:8003"
+    depends_on:
+      movies:
+        condition: service_healthy
+      banking:
+        condition: service_healthy
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://localhost:8003/health')"
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
 volumes:
   movies_postgres_data:
