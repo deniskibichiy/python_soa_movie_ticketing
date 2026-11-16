@@ -37,4 +37,7 @@ build/
 
 # Logs
 *.log
-EOF
+# Local databases
+*.db
+*.sqlite
+*.sqlite3

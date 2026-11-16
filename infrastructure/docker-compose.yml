@@ -1,0 +1,21 @@
+services:
+  movies-db:
+    image: postgres:16-alpine
+    container_name: soa-movies-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: movies_db
+      POSTGRES_USER: soa_user
+      POSTGRES_PASSWORD: local_dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - movies_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U soa_user -d movies_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  movies_postgres_data:
