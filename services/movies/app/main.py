@@ -11,7 +11,7 @@ Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="Movies Service",
-    description="Movie catalogue service in the modernized SOA system",
+    description="Movie catalogue service in the SOA system",
     version="1.0.0"
 )
 
