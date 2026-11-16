@@ -1,15 +1,14 @@
 
 # Python SOA Movie Ticketing System
 
-A modernization of a legacy Java-based Service-Oriented Architecture (SOA) movie ticketing application.
+An implementation of a Python-based Service-Oriented Architecture (SOA) movie ticketing application.
 
-The original system consists of three services:
+The system consists of three services:
 
 - **Movies:** Movie catalogue management and search.
 - **Banking:** Simulated card payment processing.
 - **Ticketing:** Ticket purchase orchestration and booking management.
 
-The modernization replaces the legacy Java/Thorntail implementation with Python services built around FastAPI, PostgreSQL, and Docker.
 
 ## Architecture
 
@@ -64,7 +63,11 @@ python_soa_movie_ticketing/
 
 ## Current Implementation Status
 
-### Movies Service
+### 1. Movies Service
+
+**Port:** 8001
+
+Responsible for managing the movie catalog.
 
 Implemented:
 
@@ -94,6 +97,46 @@ The service exposes:
 
 Interactive API documentation is available at `/docs`.
 
+
+### 2. Banking Service
+
+**Port:** 8002
+
+Responsible for evaluating simulated card payment requests.
+
+Implemented operations:
+
+- `GET /health` — service health check
+- `POST /charges` — process a simulated card charge
+
+**Payment simulation rule:**
+
+A charge succeeds when:
+
+- The amount is greater than zero.
+- The card number has an even number of characters.
+
+Both conditions must be satisfied.
+
+Example request:
+
+    {
+        "cardNumber": "12345678",
+        "amount": 1500
+    }
+
+Example response:
+
+    {
+        "success": true
+    }
+
+**Technology:** FastAPI, Pydantic.
+
+**Persistence:** None. The current implementation does not store payment transactions or card details.
+
+**Important:** This is a simulation of the original Java implementation, not a real payment-processing integration.
+
 ### Infrastructure
 
 Implemented:
@@ -103,16 +146,23 @@ Implemented:
 - Database health check.
 - Local database connection through port 5433.
 
-### Pending Work
 
-- Automated Movies API tests.
-- Database migrations using Alembic.
-- Further separation of API, business logic, and data access layers.
-- Banking service implementation.
-- Ticketing service implementation.
-- Inter-service communication.
-- End-to-end integration tests.
-- Architecture and deployment documentation.
+
+## Service Verification
+
+| Service | Verification |
+|---|---|
+| Movies | API operations and PostgreSQL persistence verified |
+| Banking | API operations and automated tests passed |
+| Ticketing | Pending implementation and integration |
+
+Run the Banking tests:
+
+    python -m pytest services/banking/tests/ -v
+
+Start Banking:
+
+    uvicorn services.banking.app.main:app --reload --port 8002
 
 ## Local Development
 

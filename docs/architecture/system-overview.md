@@ -1,7 +1,7 @@
 
 # System Architecture Overview
 
-## 1. Background
+# 1. Background
 
 The project implements a SOA movie ticketing application.
 
@@ -11,9 +11,9 @@ Movies, Banking, and Ticketing.
 The implementation uses Python and FastAPI, with PostgreSQL
 for persistence and Docker for local infrastructure.
 
-## 2. Service Responsibilities
+# 2. Service Responsibilities
 
-### Movies Service
+## Movies Service
 
 Owns the movie catalogue.
 
@@ -25,15 +25,58 @@ Responsibilities:
 - Search movies by release year.
 - Order search results by title or director.
 
-### Banking Service
 
-Owns payment processing and transaction records.
+## Banking Service
 
-Planned responsibilities:
-- Accept simulated card payment requests.
-- Process payment outcomes.
-- Record transactions.
-- Return payment success or failure.
+The Banking service evaluates simulated card payment requests.
+
+It is responsible for:
+
+- Accepting charge requests through HTTP.
+- Validating request structure using Pydantic.
+- Applying the simulated payment decision rule.
+- Returning a payment success or failure result.
+
+### Payment Processing Flow
+
+1. A client submits a charge request.
+2. FastAPI validates the incoming JSON.
+3. The service applies the payment decision rule.
+4. The service returns a JSON response indicating success or failure.
+
+### API Contract
+
+**Endpoint:** `POST /charges`
+
+Request:
+
+    {
+        "cardNumber": "12345678",
+        "amount": 1500
+    }
+
+Response:
+
+    {
+        "success": true
+    }
+
+### Business Rule
+
+    success = amount > 0 AND len(card_number) % 2 == 0
+
+
+### Data Ownership
+
+The Banking service currently has no database.
+
+It does not persist card details or transaction records. Its current responsibility is limited to evaluating charge requests.
+
+### Communication
+
+The Ticketing service will communicate with Banking through its HTTP API.
+
+Ticketing will use the returned `success` value to determine whether a booking can proceed.
 
 ### Ticketing Service
 
@@ -79,7 +122,9 @@ The Movies service has been implemented with FastAPI and SQLAlchemy.
 
 PostgreSQL 16 runs in Docker and stores the movie catalogue.
 
-Banking and Ticketing remain pending.
+Banking service has been implemented to simulate card payment requests. 
+
+Ticketing remain pending.
 
 ## 7. Architecture Evolution
 
@@ -91,4 +136,3 @@ Further improvements will introduce:
 - Automated tests.
 - Inter-service failure handling.
 - More robust booking and payment consistency.
-EOF
